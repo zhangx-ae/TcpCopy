@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.glodon.tcpcopy.dao.ServerDao" >
+  <resultMap id="BaseResultMap" type="com.glodon.tcpcopy.bo.server.Server" >
+    <id column="server_id" property="serverId" jdbcType="INTEGER" />
+    <result column="server_type" property="serverType" jdbcType="INTEGER" />
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="server_ip" property="serverIp" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="app_port" property="appPort" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="s_id" property="sId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    `server`.server_id, `server`.server_type, `server`.product_id, `server`.server_ip, `server`.username,
+    `server`.password, `server`.app_port, `server`.state, `server`.s_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from server
+    where server_id = #{serverId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from server
+    where server_id = #{serverId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.glodon.tcpcopy.bo.server.Server" >
+    insert into server (server_id, server_type, product_id,
+    server_ip, username, password,
+    app_port, state, s_id
+    )
+    values (#{serverId,jdbcType=INTEGER}, #{serverType,jdbcType=INTEGER}, #{productId,jdbcType=VARCHAR},
+    #{serverIp,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+    #{appPort,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{sId,jdbcType=VARCHAR}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.glodon.tcpcopy.bo.server.Server" >
+    insert into server
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="serverId != null" >
+        server_id,
+      </if>
+      <if test="serverType != null" >
+        server_type,
+      </if>
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="serverIp != null" >
+        server_ip,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="appPort != null" >
+        app_port,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="sId != null" >
+        s_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="serverId != null" >
+        #{serverId,jdbcType=INTEGER},
+      </if>
+      <if test="serverType != null" >
+        #{serverType,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIp != null" >
+        #{serverIp,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="appPort != null" >
+        #{appPort,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="sId != null" >
+        #{sId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.glodon.tcpcopy.bo.server.Server" >
+    update server
+    <set >
+      <if test="serverType != null" >
+        server_type = #{serverType,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null" >
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="serverIp != null" >
+        server_ip = #{serverIp,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="appPort != null" >
+        app_port = #{appPort,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="sId != null" >
+        s_id = #{sId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where server_id = #{serverId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.glodon.tcpcopy.bo.server.Server" >
+    update server
+    set server_type = #{serverType,jdbcType=INTEGER},
+    product_id = #{productId,jdbcType=VARCHAR},
+    server_ip = #{serverIp,jdbcType=VARCHAR},
+    username = #{username,jdbcType=VARCHAR},
+    password = #{password,jdbcType=VARCHAR},
+    app_port = #{appPort,jdbcType=VARCHAR},
+    state = #{state,jdbcType=INTEGER},
+    s_id = #{sId,jdbcType=VARCHAR}
+    where server_id = #{serverId,jdbcType=INTEGER}
+  </update>
+
+  <!--my sql-->
+  <select id="selectByIp" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `server`
+    where server_ip = #{ip,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from `server`
+    where s_id = #{sId,jdbcType=VARCHAR}
+  </select>
+
+
+  <update id="updateBySIdBatch">
+
+  </update>
+</mapper>

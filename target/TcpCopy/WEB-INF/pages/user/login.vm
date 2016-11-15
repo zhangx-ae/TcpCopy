@@ -1,0 +1,15 @@
+<html>
+<head>
+    <title>登录</title>
+</head>
+<body>
+欢迎登录
+<form>
+    <input type="text" placeholder="使用域账号进行登录" name="username">
+    <br>
+    <input type="password" placeholder="请输入域账号密码" name="password">
+    <br>
+    <input type="submit" value="登录">
+</form>
+</body>
+</html>

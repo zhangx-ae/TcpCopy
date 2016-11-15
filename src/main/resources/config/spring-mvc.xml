@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  
+                        http://www.springframework.org/schema/context  
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.glodon"/>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="com.github.miemiedev.mybatis.paginator.jackson2.PageListJsonMapper"/>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.github.miemiedev.mybatis.paginator.springmvc.PageListAttrHandlerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <mvc:resources mapping="/resources/pages/**/*.html" location="/WEB-INF/pages/"/>
+    <mvc:resources mapping="/resources/lib/**" location="/WEB-INF/resources/lib/"/>
+    <mvc:resources mapping="/resources/modules/**" location="/WEB-INF/resources/modules/"/>
+    <mvc:resources mapping="/*.ico" location="/WEB-INF/resources/images/"/>
+
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <bean class="org.springframework.http.MediaType">
+                                <constructor-arg index="0" value="text"/>
+                                <constructor-arg index="1" value="plain"/>
+                                <constructor-arg index="2" value="UTF-8"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 启动对@AspectJ注解的支持 
+    <aop:aspectj-autoproxy proxy-target-class="true" /> -->
+    <!--把事务控制在Service层
+    <aop:config>
+        <aop:pointcut id="businessService"
+                      expression="execution(* com.glodon.gcf_platform.service.*.*(..))"/>
+        <aop:advisor advice-ref="userTxAdvice" pointcut-ref="businessService"/>
+    </aop:config>-->
+    <!-- aop -->
+
+    <!--velocity begin-->
+    <bean id="velocityConfig"
+          class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="/WEB-INF/pages/"/>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="cache" value="true"/>
+        <property name="prefix" value=""/>
+        <!--<property name="layoutUrl" value="layout/default.vm"/>-->
+        <property name="suffix" value=".vm"/>
+        <property name="contentType">
+            <value>text/html;charset=UTF-8</value>
+        </property>
+        <property name="order" value="1"/>
+        <!--<property name="toolboxConfigLocation" value="/WEB-INF/tools.xml"/>-->
+        <!--<property name="attributesMap">-->
+            <!--<map>-->
+                <!--<entry key="sec">-->
+                    <!--<bean class="com.glodon.gec.core.VelocitySecurityUtil"/>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+    </bean>
+    <!--velocity end-->
+
+
+</beans>

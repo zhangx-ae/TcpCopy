@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>产品列表</title>
+</head>
+<body>
+产品列表
+#foreach($product in $products)
+    产品id:$!{product.productId}
+    <br>
+    用户id:$!{product.ownerId}
+    <br>
+    产品名称:$!{product.productName}
+    <br>
+    #foreach($server in $!product.servers)
+    服务器ip:$!{server.serverIp}
+    服务器类型:$!{server.serverType}
+    服务器用户名:$!{server.username}
+    服务器密码:$!{server.password}
+    服务器端口:$!{server.appPort}
+    <br><br>
+    #end
+    <br><br><br>
+#end
+</body>
+</html>

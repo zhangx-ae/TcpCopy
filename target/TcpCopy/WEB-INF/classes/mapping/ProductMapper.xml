@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.glodon.tcpcopy.dao.ProductDao">
+  <resultMap id="BaseResultMap" type="com.glodon.tcpcopy.bo.product.Product" >
+    <id column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="owner_id" property="ownerId" jdbcType="VARCHAR" />
+    <result column="product_name" property="productName" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER"/>
+    <result column="p_id" property="pId" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <resultMap id="ServerResultMap" extends="BaseResultMap" type="com.glodon.tcpcopy.bo.product.Product">
+    <collection property="servers" ofType="com.glodon.tcpcopy.bo.server.Server">
+      <id column="server_id" property="serverId" jdbcType="INTEGER" />
+      <result column="server_type" property="serverType" jdbcType="INTEGER" />
+      <result column="server_ip" property="serverIp" jdbcType="VARCHAR" />
+      <result column="app_port" property="appPort" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    product.product_id, product.owner_id, product.product_name, product.state, product.p_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from product
+    where product_id = #{productId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from product
+    where product_id = #{productId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.glodon.tcpcopy.bo.product.Product" >
+    insert into product (product_id, owner_id, product_name,
+    state, p_id)
+    values (#{productId,jdbcType=INTEGER}, #{ownerId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+    #{state,jdbcType=INTEGER}, #{pId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.glodon.tcpcopy.bo.product.Product" >
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="ownerId != null" >
+        owner_id,
+      </if>
+      <if test="productName != null" >
+        product_name,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="pId != null" >
+        p_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null" >
+        #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="pId != null" >
+        #{pId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.glodon.tcpcopy.bo.product.Product" >
+    update product
+    <set >
+      <if test="ownerId != null" >
+        owner_id = #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="pId != null" >
+        p_id = #{pId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where product_id = #{productId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.glodon.tcpcopy.bo.product.Product" >
+    update product
+    set owner_id = #{ownerId,jdbcType=VARCHAR},
+    product_name = #{productName,jdbcType=VARCHAR},
+    state = #{state,jdbcType=INTEGER},
+    p_id = #{pId,jdbcType=VARCHAR}
+    where product_id = #{productId,jdbcType=INTEGER}
+  </update>
+
+  <!--my sql-->
+  <select id="selectByOwnerId" resultMap="ServerResultMap">
+    SELECT
+    <include refid="Base_Column_List" />,
+    <include refid="com.glodon.tcpcopy.dao.ServerDao.Base_Column_List"/>
+    from product
+    LEFT JOIN `server` on product.p_id = `server`.product_id
+    where owner_id = #{ownerId,jdbcType=VARCHAR} and product.state = 1
+  </select>
+  <update id="updateByPIdSelective" parameterType="com.glodon.tcpcopy.bo.product.Product" >
+    update product
+    <set >
+      <if test="ownerId != null" >
+        owner_id = #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+    </set>
+    where p_id = #{pId,jdbcType=INTEGER}
+  </update>
+
+
+  <update id="deleteByPId" parameterType="string">
+    update product set state = 0
+    WHERE p_id = #{pId}
+  </update>
+</mapper>
